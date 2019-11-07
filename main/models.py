@@ -1,16 +1,17 @@
 from django.db import models
-
+from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
 # Create your models here.
 
 class Book(models.Model):
 	title = models.CharField(max_length=30)
+	img = models.ImageField(upload_to='img/%Y/%m/%d/')
 	author = models.CharField(max_length=50)
 	availability = models.BooleanField(default=True)
 	borrowership = models.ForeignKey(Borrowership, on_delete=models.CASCADE)
 	owner = models.CharField(max_length=30)
-	
+
 
 class Borrowership(models.Model):
 	borrowership_type = models.CharField(max_length=10) #free, paid
@@ -21,7 +22,7 @@ class Borrowership(models.Model):
 
 
 class UserBorrowership(models.Model):
-	#user = foreingKey(user)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 	borrowership = models.ForeignKey(Borrowership, on_delete=models.CASCADE)
 	#payment_id
 	book = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -32,24 +33,24 @@ class UserBorrowership(models.Model):
 
 
 class Ownership(models.Model):
-	#user = foreingKey
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 	book = models.ForeignKey(Book, on_delete=models.CASCADE)
 	city_region = models.CharField(max_length=30)
 
 
 class Owner(models.Model):
-	#user = foreingKey
-	#rating = 
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+	#rating =
 
 class Group(models.Model):
 	name = models.CharField(max_length=30)
-	#members = foreingKey
+	group_icon = models.ImageField(upload_to='group_icon/%Y/%m/%d')
+	members = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-
-class Post(models.Model):
+class AbstractPost(models.Model):
 	#post_owner = foreingKey
 	post_content = models.TextField()
-	#likes = 
+	#likes =
 	#dislikes
 	reply = models.Foreignkey(Reply, on_delete=models.CASCADE)
 
@@ -57,6 +58,7 @@ class Post(models.Model):
 		abstract = True
 
 class Reply(Post):
+	post_content = models.TextField()
 
 
 class UserCreationModel(BaseUserManager):
@@ -73,8 +75,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 	objects = UserCreationModel()
 
-	#USERNAME_FIELD = 
-	 
-
-
-
+	USERNAME_FIELD = 'email'
