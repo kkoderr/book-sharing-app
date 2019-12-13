@@ -130,3 +130,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = '/media/'
 
 AUTH_USER_MODEL = "main.User"
+#LOGIN_REDIRECT_URL = "/accounts/profile/"

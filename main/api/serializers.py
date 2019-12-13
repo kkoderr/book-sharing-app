@@ -7,9 +7,5 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['title','img','author','availability','borrowership','owner']
 
-        def validate_title(self, content):
-            lines = content.split(' ')
-            for line in lines:
-                if line[0].islower():
-                    line[0].upper
-            return
+        def validate_title(self, value):
+            return value.title()
